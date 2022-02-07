@@ -28,6 +28,7 @@ Prosta aplikacja umożliwiająca tworzenie i zapisywanie notatek.
 * [ ] filtrowanie i przegląd notatek na podstawie:
   * [ ] daty utworzenia
   * [ ] przypisanych tagów
+* [ ] udostępnianie notatki przez link
 * [ ] odczytywanie notatek w trybie offline
 * [ ] synchronizacja lokalnych notetek z serwerem
 
