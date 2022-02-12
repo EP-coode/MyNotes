@@ -4,11 +4,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { ormconfig } from './ormconfig';
 import { User } from './user/entities/user';
-import { config } from '../ormconfig';
 
 @Module({
-  imports: [AuthModule, UserModule, TypeOrmModule.forRoot(config)],
+  imports: [],
   controllers: [AppController],
   providers: [AppService],
 })
