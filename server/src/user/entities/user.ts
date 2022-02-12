@@ -1,9 +1,9 @@
-import { BeforeInsert, Column, Entity, PrimaryColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class User {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('increment')
   id: number;
 
   @Column({ type: 'varchar', nullable: false, unique: false })

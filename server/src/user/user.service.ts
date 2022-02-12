@@ -16,7 +16,7 @@ export class UserService {
       where: { email },
     });
 
-    if (!result) {
+    if (result) {
       throw new HttpException(
         'User with given email already exist.',
         HttpStatus.BAD_REQUEST,
@@ -29,7 +29,7 @@ export class UserService {
       name,
     });
 
-    this.userRepository.save(user);
+    await this.userRepository.save(user);
 
     return user;
   }
