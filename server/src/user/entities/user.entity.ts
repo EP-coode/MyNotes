@@ -19,6 +19,9 @@ export class User {
   emailConfirmed: boolean;
 
   @Column({ type: 'varchar', nullable: true })
+  hashedRt?: string;
+
+  @Column({ type: 'varchar', nullable: true })
   confirmationToken?: string;
 
   @BeforeInsert()

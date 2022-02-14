@@ -11,7 +11,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async createUser({ email, name, password }: CreateUserDto) {
+  async createUser({ email, name, password }: CreateUserDto): Promise<User> {
     const result = await this.userRepository.findOne({
       where: { email },
     });
@@ -34,8 +34,13 @@ export class UserService {
     return user;
   }
 
-  async findUserByEmail(email: string) {
+  async findUserByEmail(email: string): Promise<User> {
     const user = this.userRepository.findOne({ where: { email } });
+    return user;
+  }
+
+  async findUserById(id: number): Promise<User> {
+    const user = this.userRepository.findOne({ where: { id } });
     return user;
   }
 }
