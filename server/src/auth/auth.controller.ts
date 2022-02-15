@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { GetCurrentUserId } from 'src/common/decorators/getCurrentUserId.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
 import { CreateUserDto } from 'src/user/dto/createUserDto';
@@ -18,6 +19,7 @@ import { AtGuard } from './guards/at.guard';
 import { RtGuard } from './guards/rt.guard';
 import { ILoginResponse } from './interfaces/loginResponse';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -30,6 +32,7 @@ export class AuthController {
   }
 
   @Public()
+  @ApiBearerAuth('jwt-refresh')
   @UseGuards(RtGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
@@ -39,6 +42,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @ApiBearerAuth('jwt-auth')
   @HttpCode(HttpStatus.OK)
   async logout(@Req() req, @GetCurrentUserId() userId: number) {
     return await this.authService.logout(userId);
