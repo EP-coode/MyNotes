@@ -20,6 +20,9 @@ export class Note {
   })
   lastModification: Date;
 
+  @Column({ type: 'varchar', length: 64 })
+  title: string;
+
   @Column({ type: 'varchar', length: 1024 })
   content: string;
 

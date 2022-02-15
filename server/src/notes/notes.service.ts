@@ -1,4 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
+import createNoteDto from './dto/createNote.dto';
 
 @Injectable()
-export class NotesService {}
+export class NotesService {
+  async create(createNoteDto: createNoteDto): Promise<void> {
+    throw new NotImplementedException();
+  }
+
+  async findAllUserNotes(userId: number): Promise<void> {
+    throw new NotImplementedException();
+  }
+}
