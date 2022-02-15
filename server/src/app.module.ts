@@ -8,6 +8,8 @@ import { User } from './user/entities/user.entity';
 import * as dotenv from 'dotenv';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './auth/guards/at.guard';
+import { NotesModule } from './notes/notes.module';
+import { Note } from './notes/entities/note.entity';
 
 dotenv.config();
 
@@ -20,11 +22,12 @@ dotenv.config();
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      entities: [User],
+      entities: [User, Note],
       synchronize: true,
     }),
     UserModule,
     AuthModule,
+    NotesModule,
   ],
   controllers: [AppController],
   providers: [

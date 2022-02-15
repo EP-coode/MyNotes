@@ -1,5 +1,12 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Note } from 'src/notes/entities/note.entity';
 
 @Entity()
 export class User {
@@ -23,6 +30,9 @@ export class User {
 
   @Column({ type: 'varchar', nullable: true })
   confirmationToken?: string;
+
+  @OneToMany((type) => Note, (note) => note.creator)
+  notes: Note[];
 
   @BeforeInsert()
   async hashPassword() {
