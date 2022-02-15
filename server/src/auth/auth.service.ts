@@ -13,6 +13,7 @@ import { CreateUserDto } from 'src/user/dto/createUserDto';
 import { ILoginResponse } from './interfaces/loginResponse';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { RegisterResult } from './interfaces/registerResult';
 
 @Injectable()
 export class AuthService {
@@ -57,8 +58,15 @@ export class AuthService {
     this.userRepository.update({ id: userId }, { hashedRt: null });
   }
 
-  async registerUser(user: CreateUserDto) {
-    return await this.usersService.createUser(user);
+  async registerUser(user: CreateUserDto): Promise<RegisterResult> {
+    const { id, email, emailConfirmed, name } =
+      await this.usersService.createUser(user);
+    return {
+      id,
+      email,
+      emailConfirmed,
+      name,
+    };
   }
 
   private async validateUserRefreshToken({ hashedRt }: User, rt: string) {
