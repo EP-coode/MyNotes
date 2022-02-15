@@ -31,7 +31,7 @@ export class User {
   @Column({ type: 'varchar', nullable: true })
   confirmationToken?: string;
 
-  @OneToMany((type) => Note, (note) => note.creator)
+  @OneToMany((type) => Note, (note) => note.creator, { onDelete: 'CASCADE' })
   notes: Note[];
 
   @BeforeInsert()
