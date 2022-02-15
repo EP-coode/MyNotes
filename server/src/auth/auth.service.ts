@@ -3,7 +3,10 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/loginRequest.dto';
 
+// maybe use argon2 instead ???
 import * as bcrypt from 'bcrypt';
+import { createHash } from 'crypto';
+
 import { JwtService } from '@nestjs/jwt';
 import { IJwtPayload } from './interfaces/jwtPayload';
 import { CreateUserDto } from 'src/user/dto/createUserDto';
@@ -39,7 +42,7 @@ export class AuthService {
       throw new ForbiddenException();
     }
 
-    const tokensMatch = await bcrypt.compare(rt, user.hashedRt);
+    const tokensMatch = await this.validateUserRefreshToken(user, rt);
 
     if (tokensMatch) {
       const tokens = await this.createTokens(user);
@@ -58,9 +61,15 @@ export class AuthService {
     return await this.usersService.createUser(user);
   }
 
+  private async validateUserRefreshToken({ hashedRt }: User, rt: string) {
+    const hrt = createHash('sha256').update(rt).digest('hex');
+    return await bcrypt.compare(hrt, hashedRt);
+  }
+
   private async updateUserRt({ id }: User, rt: string): Promise<void> {
     // is salt necesary when rt is complex, i guess not ???
-    const hash = await bcrypt.hash(rt, 10);
+    const hrt = createHash('sha256').update(rt).digest('hex');
+    const hash = await bcrypt.hash(hrt, 10);
     await this.userRepository.update({ id: id }, { hashedRt: hash });
   }
 
