@@ -34,10 +34,10 @@ Prosta aplikacja umożliwiająca tworzenie i zapisywanie notatek.
   - [x] listowanie własnych notaktek
   - [x] usuwanie notatek
   - [ ] dodawanie notatek
-  - [ ] listowanie notatak na podstawie kategorii
+  - [ ] listowanie notatak na podstawie tagu
   - [ ] listowanie notatek na podstawie fraz w tytule/ciele
-- [ ] CRUD kategorii notatek
-  - ...
+- [x] sprawdzenie ilosci notatek o danym tagu
+- [ ] podpowiadanie nazwy tagu przy jego dodawaniu do notatki
 - [ ] udostępnianie notatki przez link
 - [ ] odczytywanie notatek w trybie offline
   - [ ] synchronizacja lokalnych notetek z serwerem
