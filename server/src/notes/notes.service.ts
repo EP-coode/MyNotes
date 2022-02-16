@@ -1,8 +1,11 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { find } from 'rxjs';
+import { Pagination } from 'src/common/dtos/pagination.dto';
 import { User } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Any, Connection, FindConditions, In, Like, Repository } from 'typeorm';
 import { CreateNoteDto } from './dto/createNote.dto';
+import { NotesQueryParameters } from './dto/notesQueryParamaters.dto';
 import { Note } from './entities/note.entity';
 
 @Injectable()
@@ -10,6 +13,7 @@ export class NotesService {
   constructor(
     @InjectRepository(Note) private readonly notesRepository: Repository<Note>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly conn: Connection,
   ) {}
 
   async create(createNoteDto: CreateNoteDto, creatorId: number): Promise<any> {
@@ -30,13 +34,33 @@ export class NotesService {
     return note;
   }
 
-  async findAllUserNotes(userId: number): Promise<Note[]> {
-    const { notes } = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['notes'],
-    });
+  async findAllUserNotes(
+    userId: number,
+    { orderByDateAsc, phrase, limit, page }: NotesQueryParameters,
+    categories: string[],
+  ): Promise<Note[]> {
+    const query = this.notesRepository
+      .createQueryBuilder('note')
+      .innerJoin(
+        'note_tags_tag',
+        'nt',
+        `note.id = nt.noteId AND note.creator = :userId
+        ${phrase ? 'AND note.title LIKE :phrase' : ''} 
+        ${categories ? 'AND nt.tagName IN (:...categories)' : ''}`,
+        {
+          phrase: `%${phrase}%`,
+          userId,
+          categories,
+        },
+      )
+      .innerJoin('tag', 'tag', 'nt.tagName = tag.name')
+      .skip(page * limit)
+      .take(limit)
+      .orderBy('note.lastModification', !!orderByDateAsc ? 'ASC' : 'DESC');
 
-    return notes;
+    const result = await query.getMany();
+
+    return result;
   }
 
   async findOne(noteId: number, creatorId: number): Promise<Note> {

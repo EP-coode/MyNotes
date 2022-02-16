@@ -6,10 +6,15 @@ import {
   Param,
   Patch,
   Post,
+  Query,
+  Req,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 import { GetCurrentUserId } from 'src/common/decorators/getCurrentUserId.decorator';
+import { Pagination } from 'src/common/dtos/pagination.dto';
 import { CreateNoteDto } from './dto/createNote.dto';
+import { NotesQueryParameters } from './dto/notesQueryParamaters.dto';
 import { NotesService } from './notes.service';
 
 @ApiTags('notes')
@@ -27,8 +32,23 @@ export class NotesController {
   }
 
   @Get()
-  findAll(@GetCurrentUserId() userId: number) {
-    return this.notesService.findAllUserNotes(userId);
+  @ApiQuery({
+    name: 'categories',
+    required: false,
+    explode: false,
+    type: String,
+    isArray: true,
+  })
+  findAll(
+    @GetCurrentUserId() userId: number,
+    @Query() notesQueryParameters: NotesQueryParameters,
+    @Query('categories') categories?: string,
+  ) {
+    return this.notesService.findAllUserNotes(
+      userId,
+      notesQueryParameters,
+      !!categories ? categories.split(',') : null,
+    );
   }
 
   @Get(':id')
