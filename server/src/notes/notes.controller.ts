@@ -1,7 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GetCurrentUserId } from 'src/common/decorators/getCurrentUserId.decorator';
-import createNoteDto from './dto/createNote.dto';
+import { CreateNoteDto } from './dto/createNote.dto';
 import { NotesService } from './notes.service';
 
 @ApiTags('notes')
@@ -12,7 +20,7 @@ export class NotesController {
 
   @Post()
   create(
-    @Body() createNoteDto: createNoteDto,
+    @Body() createNoteDto: CreateNoteDto,
     @GetCurrentUserId() userId: number,
   ) {
     return this.notesService.create(createNoteDto, userId);
@@ -23,15 +31,19 @@ export class NotesController {
     return this.notesService.findAllUserNotes(userId);
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.notesService.findOne(+id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string, @GetCurrentUserId() userId: number) {
+    return this.notesService.findOne(+id, userId);
+  }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.notesService.update(+id, updateUserDto);
-  // }
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @GetCurrentUserId() userId: number,
+    @Body() updateUserDto: CreateNoteDto,
+  ) {
+    return this.notesService.update(+id, userId, updateUserDto);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string, @GetCurrentUserId() userId: number) {

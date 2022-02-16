@@ -35,7 +35,9 @@ export class Note {
   @ManyToOne((type) => User, (user) => user.notes)
   creator: User;
 
-  @ManyToMany(() => Tag, (tag) => tag.notes)
+  @ManyToMany(() => Tag, (tag) => tag.notes, {
+    cascade: ['insert', 'update'],
+  })
   @JoinTable()
   tags: Tag[];
 }
