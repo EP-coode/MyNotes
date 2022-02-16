@@ -43,3 +43,5 @@ Prosta aplikacja umożliwiająca tworzenie i zapisywanie notatek.
   - [ ] synchronizacja lokalnych notetek z serwerem
 
 ### Schemat bazy danych
+
+![database schema]('./docs/db_diagram.svg')
