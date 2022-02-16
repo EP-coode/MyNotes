@@ -8,8 +8,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './auth/guards/at.guard';
 import { NotesModule } from './notes/notes.module';
 import { Note } from './notes/entities/note.entity';
-import { TagsModule } from './tags/tags.module';
 import { Tag } from './tags/entities/tag.entity';
+import { TagsModule } from './tags/tags.module';
 
 dotenv.config();
 
