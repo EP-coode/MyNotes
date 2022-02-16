@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export default class createNoteDto {
   @ApiProperty()
@@ -12,5 +12,7 @@ export default class createNoteDto {
   @IsNotEmpty()
   content: string;
 
+  @IsArray()
+  @IsNumber({}, { each: true })
   categories: number[];
 }

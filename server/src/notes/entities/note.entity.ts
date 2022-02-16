@@ -1,9 +1,12 @@
 import { type } from 'os';
+import { Tag } from 'src/tags/entities/tag.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   BeforeInsert,
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -31,4 +34,8 @@ export class Note {
 
   @ManyToOne((type) => User, (user) => user.notes)
   creator: User;
+
+  @ManyToMany(() => Tag, (tag) => tag.notes)
+  @JoinTable()
+  tags: Tag[];
 }
