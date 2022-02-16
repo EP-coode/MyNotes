@@ -44,4 +44,4 @@ Prosta aplikacja umożliwiająca tworzenie i zapisywanie notatek.
 
 ### Schemat bazy danych
 
-![database schema]('./docs/db_diagram.svg')
+![database schema](./docs/db_diagram.svg)
