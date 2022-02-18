@@ -10,6 +10,7 @@ import { NotesModule } from './notes/notes.module';
 import { Note } from './notes/entities/note.entity';
 import { Tag } from './tags/entities/tag.entity';
 import { TagsModule } from './tags/tags.module';
+import { MailModule } from './mail/mail.module';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ dotenv.config();
     AuthModule,
     NotesModule,
     TagsModule,
+    MailModule,
   ],
   providers: [
     {

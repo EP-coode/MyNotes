@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { MailService } from 'src/mail/mail.service';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUserDto';
 import { User } from './entities/user.entity';
@@ -9,6 +10,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly mailService: MailService,
   ) {}
 
   async createUser({ email, name, password }: CreateUserDto): Promise<User> {
@@ -29,7 +31,10 @@ export class UserService {
       name,
     });
 
-    await this.userRepository.save(user);
+    await Promise.all([
+      this.userRepository.save(user),
+      this.mailService.sendUserConfirmation(user, 'abc123'),
+    ]);
 
     return user;
   }
