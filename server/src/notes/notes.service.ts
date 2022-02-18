@@ -45,7 +45,7 @@ export class NotesService {
         'note_tags_tag',
         'nt',
         `note.id = nt.noteId AND note.creator = :userId
-        ${phrase ? 'AND note.title LIKE :phrase' : ''} 
+        ${phrase ? 'AND note.title LIKE :phrase' : ''}
         ${categories ? 'AND nt.tagName IN (:...categories)' : ''}`,
         {
           phrase: `%${phrase}%`,
@@ -53,7 +53,7 @@ export class NotesService {
           categories,
         },
       )
-      .innerJoin('tag', 'tag', 'nt.tagName = tag.name')
+      .innerJoinAndMapOne('note.tags', 'tag', 'tag', 'nt.tagName = tag.name')
       .skip(page * limit)
       .take(limit)
       .orderBy('note.lastModification', !!orderByDateAsc ? 'ASC' : 'DESC');
@@ -65,6 +65,7 @@ export class NotesService {
 
   async findOne(noteId: number, creatorId: number): Promise<Note> {
     const note = await this.notesRepository.findOne({
+      relations: ['tags'],
       where: {
         creator: { id: creatorId },
         id: noteId,

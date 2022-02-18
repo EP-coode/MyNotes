@@ -9,12 +9,13 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { GetCurrentUserId } from 'src/common/decorators/getCurrentUserId.decorator';
 import { Pagination } from 'src/common/dtos/pagination.dto';
 import { CreateNoteDto } from './dto/createNote.dto';
 import { NotesQueryParameters } from './dto/notesQueryParamaters.dto';
+import { Note } from './entities/note.entity';
 import { NotesService } from './notes.service';
 
 @ApiTags('notes')
@@ -39,11 +40,14 @@ export class NotesController {
     type: String,
     isArray: true,
   })
+  @ApiResponse({
+    type: [Note],
+  })
   findAll(
     @GetCurrentUserId() userId: number,
     @Query() notesQueryParameters: NotesQueryParameters,
     @Query('categories') categories?: string,
-  ) {
+  ): Promise<Note[]> {
     return this.notesService.findAllUserNotes(
       userId,
       notesQueryParameters,
@@ -52,6 +56,9 @@ export class NotesController {
   }
 
   @Get('/search-hints')
+  @ApiResponse({
+    type: [String],
+  })
   searchHint(
     @Query('title') title: string,
     @GetCurrentUserId() userId: number,
@@ -60,6 +67,9 @@ export class NotesController {
   }
 
   @Get(':id')
+  @ApiResponse({
+    type: Note,
+  })
   findOne(@Param('id') id: string, @GetCurrentUserId() userId: number) {
     return this.notesService.findOne(+id, userId);
   }
