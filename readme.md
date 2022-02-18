@@ -30,14 +30,14 @@ Prosta aplikacja umożliwiająca tworzenie i zapisywanie notatek.
   - [ ] weryfikacja kont tworzonych via e-mail
   - [x] logowanie via email
   - [ ] logowanie za pomocą google
-- [ ] CRUD notatek
+- [x] CRUD notatek
   - [x] listowanie własnych notaktek
   - [x] usuwanie notatek
-  - [ ] dodawanie notatek
-  - [ ] listowanie notatak na podstawie tagu
-  - [ ] listowanie notatek na podstawie fraz w tytule/ciele
+  - [x] dodawanie notatek
+  - [x] listowanie notatak na podstawie tagu
+  - [x] listowanie notatek na podstawie fraz w tytule/ciele
 - [x] sprawdzenie ilosci notatek o danym tagu
-- [ ] podpowiadanie nazwy tagu przy jego dodawaniu do notatki
+- [x] podpowiadanie nazwy tagu przy jego dodawaniu do notatki
 - [ ] udostępnianie notatki przez link
 - [ ] odczytywanie notatek w trybie offline
   - [ ] synchronizacja lokalnych notetek z serwerem
