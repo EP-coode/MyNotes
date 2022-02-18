@@ -54,4 +54,16 @@ export class AuthController {
   async register(@Body() user: CreateUserDto) {
     return await this.authService.registerUser(user);
   }
+
+  @Get('google')
+  @Public()
+  @UseGuards(AuthGuard('google'))
+  async gogleAuth(@Req() req) {}
+
+  @Get('google/redirect')
+  @Public()
+  @UseGuards(AuthGuard('google'))
+  async gogleAuthRedirect(@Req() req) {
+    return this.authService.googleLogin(req);
+  }
 }

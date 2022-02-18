@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { AtStrategy } from './strategies/at.strategy';
 import { RtStrategy } from './strategies/rt.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 dotenv.config();
 
@@ -22,7 +23,7 @@ dotenv.config();
       },
     }),
   ],
-  providers: [AuthService, AtStrategy, RtStrategy],
+  providers: [AuthService, AtStrategy, RtStrategy, GoogleStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

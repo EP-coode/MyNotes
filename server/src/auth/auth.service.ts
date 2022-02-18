@@ -14,6 +14,7 @@ import { ILoginResponse } from './interfaces/loginResponse';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RegisterResult } from './interfaces/registerResult';
+import { getRandomString } from 'src/common/helpers/random';
 
 @Injectable()
 export class AuthService {
@@ -100,5 +101,23 @@ export class AuthService {
       acces_token: at,
       refresh_token: rt,
     };
+  }
+
+  async googleLogin(req: any) {
+    const {
+      email,
+      firstName,
+      lastName,
+    }: { email: string; firstName: string; lastName: string } = req.user;
+
+    let user = await this.usersService.findUserByEmail(email);
+
+    if (!user) {
+      const createUerDto = new CreateUserDto();
+      createUerDto.email = email;
+      createUerDto.name = `${firstName} ${lastName}`;
+      createUerDto.password = getRandomString();
+      user = await this.usersService.createUser(createUerDto);
+    }
   }
 }
