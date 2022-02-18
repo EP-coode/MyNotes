@@ -51,6 +51,14 @@ export class NotesController {
     );
   }
 
+  @Get('/search-hints')
+  searchHint(
+    @Query('title') title: string,
+    @GetCurrentUserId() userId: number,
+  ) {
+    return this.notesService.getSearchHint(title, userId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string, @GetCurrentUserId() userId: number) {
     return this.notesService.findOne(+id, userId);

@@ -74,6 +74,37 @@ export class NotesService {
     return note;
   }
 
+  async getSearchHint(
+    title: string,
+    userId: number,
+    maxResults: number = 10,
+  ): Promise<string[]> {
+    const notes = await this.notesRepository
+      .createQueryBuilder('note')
+      .where('note.creatorId = :id', { id: userId })
+      .andWhere('note.title like :phrase', { phrase: `${title}%` })
+      .select('title')
+      .distinct(true)
+      .take(maxResults)
+      .getRawMany();
+
+    return notes.map((n) => n.title);
+    // lack of distinct in repository api
+    // const notes = await this.notesRepository.find({
+    //   select: ['title'],
+    //   where: {
+    //     creator: { id: userId },
+    //     title: Like(`${title}%`),
+    //   },
+    //   order: {
+    //     lastModification: 'DESC',
+    //   },
+    //   take: maxResults,
+    // });
+
+    //return notes.map((n) => n.title);
+  }
+
   async update(noteId: number, creaotrId: number, note: CreateNoteDto) {
     const result = this.notesRepository.update(
       {
