@@ -27,7 +27,7 @@ Prosta aplikacja umożliwiająca tworzenie i zapisywanie notatek.
 
 - [ ] logowanie:
   - [x] tworzenia kotna via e-mail
-  - [ ] weryfikacja kont tworzonych via e-mail
+  - [x] weryfikacja kont tworzonych via e-mail
   - [x] logowanie via email
   - [ ] logowanie za pomocą google
 - [x] CRUD notatek
