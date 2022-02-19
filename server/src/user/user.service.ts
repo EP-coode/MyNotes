@@ -13,7 +13,10 @@ export class UserService {
     private readonly mailService: MailService,
   ) {}
 
-  async createUser({ email, name, password }: CreateUserDto): Promise<User> {
+  async createUser(
+    { email, name, password }: CreateUserDto,
+    confirmationToken: string,
+  ): Promise<User> {
     const result = await this.userRepository.findOne({
       where: { email },
     });
@@ -29,11 +32,13 @@ export class UserService {
       email,
       password,
       name,
+      emailConfirmed: false,
+      confirmationToken,
     });
 
     await Promise.all([
       this.userRepository.save(user),
-      this.mailService.sendUserConfirmation(user, 'abc123'),
+      this.mailService.sendUserConfirmation(user, confirmationToken),
     ]);
 
     return user;

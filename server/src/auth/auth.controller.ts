@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -55,15 +56,13 @@ export class AuthController {
     return await this.authService.registerUser(user);
   }
 
-  @Get('google')
   @Public()
-  @UseGuards(AuthGuard('google'))
-  async gogleAuth(@Req() req) {}
-
-  @Get('google/redirect')
-  @Public()
-  @UseGuards(AuthGuard('google'))
-  async gogleAuthRedirect(@Req() req) {
-    return this.authService.googleLogin(req);
+  @Get('email-confirm')
+  async confirmEmail(
+    @Query('token') confirmationToken: string,
+    @Query('email') email: string,
+  ) {
+    const succes = await this.authService.verifyEmail(email, confirmationToken);
+    if (succes) return 'succesfuly verified email';
   }
 }

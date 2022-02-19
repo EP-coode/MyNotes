@@ -13,8 +13,8 @@ import { join } from 'path';
         host: 'smtp.ethereal.email',
         port: 587,
         auth: {
-          user: 'stephan.quigley37@ethereal.email',
-          pass: 'pPhA3sM3VkC6dTAEja',
+          user: 'irv3rovd7qeteuxk@ethereal.email',
+          pass: 'cTh9mmygqk8XwJUuZw',
         },
       },
       template: {

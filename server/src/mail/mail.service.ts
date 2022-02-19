@@ -7,11 +7,11 @@ export class MailService {
   constructor(private readonly mailService: MailerService) {}
 
   async sendUserConfirmation(user: User, token: string) {
-    const url = 'some url';
+    const url = `localhost:7000/auth/email-confirm?token=${token}&email=${user.email}`;
 
     this.mailService.sendMail({
       to: user.email,
-      subject: 'Witaj w aplikacji MyNotes. Ptwierdz swoje konto',
+      subject: 'Welcome to MyNotes app. Please confirm your email',
       template: 'confirmation',
       context: {
         username: user.name,

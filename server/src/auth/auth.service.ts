@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotImplementedException,
@@ -33,6 +34,10 @@ export class AuthService {
     const user = await this.usersService.findUserByEmail(loginDto.email);
 
     if (user && (await bcrypt.compare(loginDto.password, user.password))) {
+      if (!user.emailConfirmed) {
+        throw new ForbiddenException('your email is not confirmed');
+      }
+
       const tokens: ILoginResponse = await this.createTokens(user);
       await this.updateUserRt(user, tokens.refresh_token);
       return tokens;
@@ -64,8 +69,9 @@ export class AuthService {
   }
 
   async registerUser(user: CreateUserDto): Promise<RegisterResult> {
+    const confirmationToken = getRandomString(70);
     const { id, email, emailConfirmed, name } =
-      await this.usersService.createUser(user);
+      await this.usersService.createUser(user, confirmationToken);
     return {
       id,
       email,
@@ -105,6 +111,27 @@ export class AuthService {
       acces_token: at,
       refresh_token: rt,
     };
+  }
+
+  async verifyEmail(
+    email: string,
+    emailVerificationToken: string,
+  ): Promise<boolean> {
+    const user = await this.usersService.findUserByEmail(email);
+
+    if (!user || user.confirmationToken != emailVerificationToken) {
+      throw new BadRequestException();
+    }
+
+    user.emailConfirmed = true;
+    await this.userRepository.update(
+      {
+        email,
+      },
+      user,
+    );
+
+    return true;
   }
 
   async googleLogin(req: any) {
