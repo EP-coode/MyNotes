@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotImplementedException,
+} from '@nestjs/common';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/loginRequest.dto';
@@ -104,20 +108,6 @@ export class AuthService {
   }
 
   async googleLogin(req: any) {
-    const {
-      email,
-      firstName,
-      lastName,
-    }: { email: string; firstName: string; lastName: string } = req.user;
-
-    let user = await this.usersService.findUserByEmail(email);
-
-    if (!user) {
-      const createUerDto = new CreateUserDto();
-      createUerDto.email = email;
-      createUerDto.name = `${firstName} ${lastName}`;
-      createUerDto.password = getRandomString();
-      user = await this.usersService.createUser(createUerDto);
-    }
+    throw new NotImplementedException();
   }
 }
