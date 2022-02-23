@@ -2,9 +2,9 @@ const API_URL = "127.0.0.1";
 
 export default async function client<T, B>(
   endpoint: string,
-  method: "GET" | "POST" | "PUT" | "DELETE",
+  method: "GET" | "POST" | "PATCH" | "DELETE",
   body: B | undefined,
-  headers: {},
+  headers = {},
   apiUrl = API_URL
 ): Promise<T | any> {
   try {
