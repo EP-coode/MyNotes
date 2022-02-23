@@ -3,5 +3,5 @@ export interface NotesFilter {
   page?: number;
   phrase?: string;
   orderByDateAsc?: boolean;
-  categories?: [string];
+  categories?: string[];
 }

@@ -1,4 +1,4 @@
-import client from "../client";
+import request from "../httpClient/client";
 import { CreateNote } from "../interfaces/createNote";
 import { Note } from "../interfaces/note";
 import { NotesFilter } from "../interfaces/notesFilter";
@@ -37,7 +37,7 @@ export async function getNotes(
     endpoint += `&${paramName}=${v}`;
   });
 
-  return client<[Note], undefined>(endpoint, "GET", undefined, {
+  return request<[Note], undefined>(endpoint, "GET", undefined, {
     Authorization: `Bearer ${acces_token}`,
   });
 }
@@ -46,13 +46,13 @@ export async function getNotesById(
   acces_token: string,
   noteId: number
 ): Promise<Note> {
-  return client<Note, undefined>(`/note/${noteId}`, "GET", undefined, {
+  return request<Note, undefined>(`/note/${noteId}`, "GET", undefined, {
     Authorization: `Bearer ${acces_token}`,
   });
 }
 
 export async function createNote(acces_token: string, createNote: CreateNote) {
-  return client<Note, CreateNote>("/notes", "PATCH", createNote, {
+  return request<Note, CreateNote>("/notes", "PATCH", createNote, {
     Authorization: `Bearer ${acces_token}`,
   });
 }
@@ -62,13 +62,13 @@ export async function updateNote(
   noteId: number,
   createNote: CreateNote
 ) {
-  return client<Note, CreateNote>(`/note/${noteId}`, "POST", createNote, {
+  return request<Note, CreateNote>(`/note/${noteId}`, "POST", createNote, {
     Authorization: `Bearer ${acces_token}`,
   });
 }
 
 export async function deleteNote(acces_token: string, noteId: number) {
-  return client(`/note/${noteId}`, "DELETE", undefined, {
+  return request(`/note/${noteId}`, "DELETE", undefined, {
     Authorization: `Bearer ${acces_token}`,
   });
 }
@@ -77,7 +77,7 @@ export async function getTitleHints(
   acces_token: string,
   phrase: string
 ): Promise<[String]> {
-  return client<[String], undefined>(
+  return request<[String], undefined>(
     `/notes/search-hints?title=${phrase}`,
     "GET",
     undefined,

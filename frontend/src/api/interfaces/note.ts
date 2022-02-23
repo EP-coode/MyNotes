@@ -4,5 +4,5 @@ export interface Note {
   content: string;
   lastModification: string;
   featured: boolean;
-  tags: [string];
+  tags: string[];
 }
