@@ -1,14 +1,11 @@
 import client from "../client";
 import { CreateNote } from "../interfaces/createNote";
 import { Note } from "../interfaces/note";
+import { NotesFilter } from "../interfaces/notesFilter";
 
 export async function getNotes(
   acces_token: string,
-  limit?: number,
-  page?: number,
-  phrase?: string,
-  orderByDateAsc?: boolean,
-  categories?: [string]
+  { limit, page, phrase, orderByDateAsc, categories }: NotesFilter
 ): Promise<[Note]> {
   const params = new Map<string, string>();
 
