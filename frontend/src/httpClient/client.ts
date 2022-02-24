@@ -1,4 +1,6 @@
-const API_URL = "127.0.0.0:7000";
+import { ErrorResponse } from "../Features/Common/interfaces/errorResponse";
+
+const API_URL = "127.0.0.1:7000";
 
 export const request = async <T, B>(
   endpoint: string,
@@ -6,7 +8,7 @@ export const request = async <T, B>(
   body: B | undefined,
   headers = {},
   apiUrl = API_URL
-): Promise<T> => {
+): Promise<[T | ErrorResponse, boolean]> => {
   const result = await fetch(`${apiUrl}${endpoint}`, {
     method: method,
     body: typeof body === "object" ? JSON.stringify(body) : undefined,
@@ -18,5 +20,5 @@ export const request = async <T, B>(
   });
 
   const data = await result.json();
-  return data;
+  return [data, result.ok];
 };
