@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Note } from "../../api/interfaces/note";
 import { NotesFilter } from "../../api/interfaces/notesFilter";
 import { getNotes } from "../../api/services/notes";
+import { RootState } from "../store";
 
 interface NotesSate {
   notes: Note[];
@@ -25,9 +26,10 @@ const initialState: NotesSate = {
 
 export const fetchNotes = createAsyncThunk<
   Note[],
-  { acces_token: string; filters: NotesFilter }
->("notes/fetchNotes", async ({ acces_token, filters }, thunkApi) => {
-  const state = thunkApi.getState()
+  { acces_token: string; filters: NotesFilter },
+  { state: RootState }
+>("notes/fetchNotes", async ({ acces_token, filters }, { getState }) => {
+  const state = getState();
   const notes = await getNotes(acces_token, filters);
   return notes;
 });

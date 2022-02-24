@@ -1,11 +1,12 @@
 import { request } from "../httpClient/client";
 import { AuthResponse } from "../interfaces/auth";
 import { CreateUser } from "../interfaces/createUser";
+import { ErrorMessage } from "../interfaces/error";
 
 export async function login(
   email: string,
   password: string
-): Promise<AuthResponse | { error: string }> {
+): Promise<AuthResponse> {
   return request(
     "/auth/login",
     "POST",
@@ -17,7 +18,7 @@ export async function login(
   );
 }
 
-export async function refresh(refresh_token: string) {
+export async function refresh(refresh_token: string): Promise<AuthResponse> {
   // przecież można to zrpobić GET-em
   return request("/auth/refresh", "POST", undefined, {
     Authorization: `Bearer ${refresh_token}`,
