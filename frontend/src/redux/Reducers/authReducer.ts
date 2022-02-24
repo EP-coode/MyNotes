@@ -14,8 +14,8 @@ interface AuthState {
 const initialState: AuthState = {
   userId: -1,
   userEmail: "",
-  refresh_token: "",
-  acces_token: "",
+  refresh_token: localStorage.getItem("rt") || "",
+  acces_token: localStorage.getItem("at") || "",
   status: "idle",
 };
 
@@ -26,13 +26,19 @@ const loginUser = createAsyncThunk<
     password: string;
   }
 >("auth/loginUser", async ({ email, password }) => {
-  return login(email, password);
+  const res = await login(email, password);
+  localStorage.setItem("rt", res.refresh_token);
+  localStorage.setItem("at", res.acces_token);
+  return res;
 });
 
 const refreshUser = createAsyncThunk<AuthResponse, string>(
   "auth/refreshUser",
   async (refreshToken) => {
-    return refresh(refreshToken);
+    const res = await refresh(refreshToken);
+    localStorage.setItem("rt", res.refresh_token);
+    localStorage.setItem("at", res.acces_token);
+    return res;
   }
 );
 
@@ -51,7 +57,7 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state, action) => {
+      .addCase(loginUser.pending, (state) => {
         state.status = "loading";
       })
       .addCase(loginUser.fulfilled, (state, action) => {
@@ -60,10 +66,10 @@ const authSlice = createSlice({
         state.acces_token = acces_token;
         state.refresh_token = refresh_token;
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state) => {
         state.status = "error";
       })
-      .addCase(refreshUser.pending, (state, action) => {
+      .addCase(refreshUser.pending, (state) => {
         state.status = "loading";
       })
       .addCase(refreshUser.fulfilled, (state, action) => {
@@ -72,18 +78,18 @@ const authSlice = createSlice({
         state.acces_token = acces_token;
         state.refresh_token = refresh_token;
       })
-      .addCase(refreshUser.rejected, (state, action) => {
+      .addCase(refreshUser.rejected, (state) => {
         state.status = "error";
       })
-      .addCase(logoutUser.pending, (state, action) => {
+      .addCase(logoutUser.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(logoutUser.fulfilled, (state, action) => {
+      .addCase(logoutUser.fulfilled, (state) => {
         state.status = "succes";
         state.acces_token = "";
         state.refresh_token = "";
       })
-      .addCase(logoutUser.rejected, (state, action) => {
+      .addCase(logoutUser.rejected, (state) => {
         state.status = "error";
       });
   },

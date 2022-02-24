@@ -1,7 +1,6 @@
 import { request } from "../httpClient/client";
 import { AuthResponse } from "../interfaces/auth";
 import { CreateUser } from "../interfaces/createUser";
-import { ErrorMessage } from "../interfaces/error";
 
 export async function login(
   email: string,

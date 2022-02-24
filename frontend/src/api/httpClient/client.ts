@@ -1,5 +1,3 @@
-import { ErrorMessage } from "../interfaces/error";
-
 const API_URL = "127.0.0.0:7000";
 
 export const request = async <T, B>(
