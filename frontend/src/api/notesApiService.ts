@@ -1,3 +1,7 @@
+import authService from "./services/auth";
+import notesService from "./services/notes";
+import tagsService from "./services/tags";
+
 const notesApiService = (apiServerUrl: string) => {
   return {
     auth: authService(apiServerUrl),
