@@ -1,17 +1,12 @@
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
-import { notesApiService } from "../api/notesApiService";
-import authSlice from "./Reducers/authReducer";
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./Reducers/authReducer";
+import notesReducer from './Reducers/notesReducer'
 
 export const store = configureStore({
   reducer: {
-    auth: authSlice,
+    auth: authReducer,
+    notes: notesReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      thunk: {
-        extraArgument: { notesApi: notesApiService('127.0.0.1:7000') },
-      },
-    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

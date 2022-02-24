@@ -1,14 +1,23 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  AnyAction,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+  ThunkAction,
+} from "@reduxjs/toolkit";
 import { AuthResponse } from "../../api/interfaces/auth";
 import { login, logout, refresh, register } from "../../api/services/auth";
-import { RootState } from "../store";
+import { RootState, store } from "../store";
+import jwt_decode from "jwt-decode";
 
 interface AuthState {
   userId: number;
   userEmail: string;
   refresh_token: string;
   acces_token: string;
-  status: "idle" | "loading" | "error" | "succes";
+  iat: number;
+  exp: number;
+  status: "loggedout" | "loading" | "error" | "loggedin";
 }
 
 const initialState: AuthState = {
@@ -16,83 +25,80 @@ const initialState: AuthState = {
   userEmail: "",
   refresh_token: localStorage.getItem("rt") || "",
   acces_token: localStorage.getItem("at") || "",
-  status: "idle",
+  iat: -1,
+  exp: -1,
+  status: "lo",
 };
 
-const loginUser = createAsyncThunk<
-  AuthResponse,
-  {
-    email: string;
-    password: string;
-  }
->("auth/loginUser", async ({ email, password }) => {
-  const res = await login(email, password);
-  localStorage.setItem("rt", res.refresh_token);
-  localStorage.setItem("at", res.acces_token);
-  return res;
-});
+const loginUserAction =
+  (
+    email: string,
+    password: string
+  ): ThunkAction<void, RootState, unknown, AnyAction> =>
+  async (dispatch) => {
+    dispatch(authSlice.actions.loginInProgres());
+    try {
+      const res = await login(email, password);
+      localStorage.setItem("rt", res.refresh_token);
+      localStorage.setItem("at", res.acces_token);
+      dispatch(authSlice.actions.loginSucces(res));
+    } catch (err) {
+      dispatch(authSlice.actions.loginFail())
+    }
+  };
 
-const refreshUser = createAsyncThunk<AuthResponse, string>(
-  "auth/refreshUser",
-  async (refreshToken) => {
-    const res = await refresh(refreshToken);
+const logoutUserAction =
+  (): ThunkAction<void, RootState, unknown, AnyAction> =>
+  async (dispatch, getState) => {
+    const state = getState();
+    const res = await logout(state.auth.acces_token);
+    localStorage.removeItem("rt");
+    localStorage.removeItem("at");
+  };
+
+const refreshUserAction =
+  (): ThunkAction<void, RootState, unknown, AnyAction> =>
+  async (dispatch, getState) => {
+    const state = getState();
+    const res = await refresh(state.auth.refresh_token);
     localStorage.setItem("rt", res.refresh_token);
     localStorage.setItem("at", res.acces_token);
-    return res;
-  }
-);
-
-const logoutUser = createAsyncThunk<
-  AuthResponse | any,
-  any,
-  { state: RootState }
->("auth/logoutUser", async (_, { getState }) => {
-  const state = getState();
-  return logout(state.auth.acces_token);
-});
+  };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(loginUser.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        const { acces_token, refresh_token } = action.payload;
-        state.status = "succes";
-        state.acces_token = acces_token;
-        state.refresh_token = refresh_token;
-      })
-      .addCase(loginUser.rejected, (state) => {
-        state.status = "error";
-      })
-      .addCase(refreshUser.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(refreshUser.fulfilled, (state, action) => {
-        const { acces_token, refresh_token } = action.payload;
-        state.status = "succes";
-        state.acces_token = acces_token;
-        state.refresh_token = refresh_token;
-      })
-      .addCase(refreshUser.rejected, (state) => {
-        state.status = "error";
-      })
-      .addCase(logoutUser.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(logoutUser.fulfilled, (state) => {
-        state.status = "succes";
-        state.acces_token = "";
-        state.refresh_token = "";
-      })
-      .addCase(logoutUser.rejected, (state) => {
-        state.status = "error";
-      });
+  reducers: {
+    loginSucces: (state, action: PayloadAction<AuthResponse>) => {
+      const { refresh_token, acces_token } = action.payload;
+      state.acces_token = acces_token;
+      state.refresh_token = refresh_token;
+      const {
+        sub,
+        email,
+        iat,
+        exp,
+      }: { sub: number; email: string; iat: number; exp: number } =
+        jwt_decode(acces_token);
+      state.userEmail = email;
+      state.userId = sub;
+      state.iat = iat;
+      state.exp = exp;
+      state.status = "succes";
+    },
+    logout: (state) => {
+      // czy to jest bezpieczne???
+      state = initialState;
+      state.status = "idle";
+    },
+    loginInProgres: (state) => {
+      state.status = "loading";
+    },
+    loginFail: (state) => {
+      state.status = "error";
+    },
   },
+  extraReducers: (builder) => {},
 });
 
 export const {} = authSlice.actions;
