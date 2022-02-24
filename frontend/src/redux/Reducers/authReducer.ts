@@ -1,6 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { login } from "../../api/services/auth";
-import client from "../../api/httpClient/client";
 import { AuthResponse } from "../../api/interfaces/auth";
 import { RootState } from "../store";
 
@@ -26,7 +24,7 @@ const loginUser = createAsyncThunk<
     email: string;
     password: string;
   }
->("auth/loginUser", async ({ email, password }) => {
+>("auth/loginUser", async ({ email, password },{extra}) => {
   return login("")
 });
 
